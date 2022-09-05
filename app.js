@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const fs = require ("fs");
+const {writeFile, copyFile} = require("./utils/generate-site.js");
 const generatePage = require("./src/page-template.js");
 
 
@@ -154,12 +155,40 @@ const promptProjects = portfolioData => {
 promptUser()
     .then(promptProjects)
     .then(portfolioData => {
-        
-        const pageHTML = generatePage(portfolioData);
-
-
-        fs.writeFile('./index.html',pageHTML, err => {
-            if (err) throw err;
-            console.log("Portfolio complete! check the index.html to see output");
-        });
+        return generatePage(portfolioData);
+    })
+    .then (pageHTML => {
+        return writeFile(pageHTML);
+    })
+    .then (writeFileResponse => {
+        console.log(writeFileResponse);
+        return copyFile();
+    })
+    .then(copyFileResponse => {
+        console.log(copyFileResponse);
+    })
+    .catch(err => {
+        console.log(err);
     });
+
+
+// promptUser()
+//     .then(promptProjects)
+//     .then(portfolioData => {
+        
+//         const pageHTML = generatePage(portfolioData);
+
+
+//         fs.writeFile('./dist/index.html',pageHTML, err => {
+//             if (err) throw err;
+//             console.log("Portfolio complete! check the index.html to see output");
+//             fs.copyFile('./src/style.css','./dist/style.css',err => {
+//                 if (err) {
+//                     console.log(err);
+//                     return;
+//                 }
+
+//                 console.log("StyleSheet copied succesfully!");
+//             })
+//         });
+//     });
